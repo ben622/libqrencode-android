@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generate() {
-        if (Build.VERSION.SDK_INT >= 23 ) {
+        if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
                 return;
@@ -54,12 +54,12 @@ public class MainActivity extends AppCompatActivity {
         if (code >= 0) {
             qrView.setImageBitmap(BitmapFactory.decodeFile(path));
             timeView.setText("Generation time:" + (end - start) + "ms，ouput:" + path);
-        }else{
+        } else {
             Toast.makeText(this, "encode failed", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private String getEditTextContent(int id){
+    private String getEditTextContent(int id) {
         return ((EditText) findViewById(id)).getText().toString();
     }
 
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-           generate();
+            generate();
         }
     }
 }
