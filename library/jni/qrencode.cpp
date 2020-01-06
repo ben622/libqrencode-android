@@ -101,7 +101,7 @@ jint qrencode::encode(const char *qrsource, unsigned int prescaler, const char *
         // Free data
         free(pRGBData);
         QRcode_free(pQRC);
-        if (LOGS_ENABLED) LOGI("%s","qrencode successful,outputfile:%s", output);
+        if (LOGS_ENABLED) LOGI("qrencode successful,outputfile:%s",output);
     } else {
         if (LOGS_ENABLED) LOGE("%s","NULL returned");
         return -1;
