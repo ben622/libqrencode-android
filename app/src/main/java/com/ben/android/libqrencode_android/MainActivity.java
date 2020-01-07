@@ -44,8 +44,11 @@ public class MainActivity extends AppCompatActivity {
         ImageView qrView = findViewById(R.id.qrview);
 
         long start = System.currentTimeMillis();
+        //background color.
+        int bgcolor = Color.argb(0, 0, 0, 0);
+        //qr color.
         int color = Color.argb(255, getColorVal(R.id.id_qr_color_r), getColorVal(R.id.id_qr_color_g), getColorVal(R.id.id_qr_color_B));
-        Bitmap bitmap = QREncode.encode(qrsource, qrsize, color);
+        Bitmap bitmap = QREncode.encode(qrsource, qrsize, bgcolor,color);
         long end = System.currentTimeMillis();
         if (bitmap!=null) {
             qrView.setImageBitmap(bitmap);

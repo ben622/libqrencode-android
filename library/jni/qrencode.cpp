@@ -109,7 +109,7 @@ jint qrencode::encode(const char *qrsource, unsigned int prescaler, const char *
     return 0;
 }
 
-jobject qrencode::encode(JNIEnv *env,const char *qrsource, unsigned int prescaler, unsigned int color) {
+jobject qrencode::encode(JNIEnv *env,const char *qrsource, unsigned int prescaler, unsigned  int backColor,unsigned int qrColor) {
     unsigned int unWidth, x, y, l, n;
     QRcode *pQRC;
     FILE *f;
@@ -140,7 +140,7 @@ jobject qrencode::encode(JNIEnv *env,const char *qrsource, unsigned int prescale
         //default draw white,support exten other color.
         for (x = 0; x < srcInfo.width; x++) {
             for (y = 0; y < srcInfo.height; y++) {
-                draw(srcInfo.stride, bitmapPixels, x, y, 0xFFFFFFFF);
+                draw(srcInfo.stride, bitmapPixels, x, y, backColor);
             }
         }
         //convert to bitmap pixel.
@@ -150,7 +150,7 @@ jobject qrencode::encode(JNIEnv *env,const char *qrsource, unsigned int prescale
                 if(pQRC->data[x * pQRC->width + y] & 1){
                     for (l = x*prescaler; l < x*prescaler+prescaler; l++) {
                         for (n = y*prescaler; n < y*prescaler+prescaler; n++) {
-                            draw(srcInfo.stride, bitmapPixels,l,n, color);
+                            draw(srcInfo.stride, bitmapPixels,l,n, qrColor);
                         }
                     }
                 }
