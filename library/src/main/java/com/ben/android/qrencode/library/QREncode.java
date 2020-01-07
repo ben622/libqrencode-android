@@ -1,6 +1,7 @@
 package com.ben.android.qrencode.library;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -49,8 +50,14 @@ public class QREncode {
         return nativeQREncode(qrsource, prescaler, output, r, g, b);
     }
 
+    public static Bitmap encode(String qrsource, int prescaler) {
+        return nativeQREncode(qrsource, prescaler, Color.WHITE,Color.BLACK);
+    }
     public static Bitmap encode(String qrsource, int prescaler, int color) {
-        return nativeQREncode(qrsource, prescaler, color);
+        return nativeQREncode(qrsource, prescaler, Color.WHITE, color);
+    }
+    public static Bitmap encode(String qrsource, int prescaler,int backgroundColor, int color) {
+        return nativeQREncode(qrsource, prescaler, backgroundColor,color);
     }
     /**
      * @param qrsource  二维码数据
@@ -63,6 +70,6 @@ public class QREncode {
      */
     private native static int nativeQREncode(String qrsource, int prescaler, String output, @IntRange(from = 0, to = 255) int r, @IntRange(from = 0, to = 255) int g, @IntRange(from = 0, to = 255) int b);
 
-    private native static Bitmap nativeQREncode(String qrsource, int prescaler,  int color);
+    private native static Bitmap nativeQREncode(String qrsource, int prescaler,  int backgroundColor,int color);
 
 }

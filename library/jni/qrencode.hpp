@@ -66,7 +66,7 @@ namespace qrencode{
     jint encode(const char *qrsource, unsigned int prescaler, const char *output, unsigned int r,
                 unsigned int g, unsigned int b);
 
-    jobject encode(JNIEnv *env,const char *qrsource, unsigned int prescaler,  unsigned int color);
+    jobject encode(JNIEnv *env,const char *qrsource, unsigned int prescaler, unsigned int backColor, unsigned int qrColor);
 
     jobject createBitmap(JNIEnv *env, uint32_t width, uint32_t height);
 
