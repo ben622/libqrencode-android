@@ -4,12 +4,11 @@ This is an efficient and fast QR code encoding framework for the Android platfor
 
 ### How do I use libqrencode?
 ```
-String path = "/sdcard/Movies/qr.bmp";
-int code= QREncode.encode("qrsource", 400, path);
-if (code >= 0) {
-    Bitmap qr = BitmapFactory.decodeFile(path));
+Bitmap bitmap = QREncode.encode(qrsource, qrsize, color);
+if (bitmap!=null) {
+    Toast.makeText(this, "qrencode successful", Toast.LENGTH_SHORT).show();
 } else {
-    Toast.makeText(this, "encode failed", Toast.LENGTH_SHORT).show();
+    Toast.makeText(this, "qrencode failed", Toast.LENGTH_SHORT).show();
 }
 ```
 

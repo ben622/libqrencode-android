@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <android/log.h>
+#include <android/bitmap.h>
 #include "./libqrencode/include/qrencode.h"
 #define LOGS_ENABLED true
 #define PRINT_TAG "qrencode"
@@ -64,6 +65,14 @@ namespace qrencode{
 
     jint encode(const char *qrsource, unsigned int prescaler, const char *output, unsigned int r,
                 unsigned int g, unsigned int b);
+
+    jobject encode(JNIEnv *env,const char *qrsource, unsigned int prescaler,  unsigned int color);
+
+    jobject createBitmap(JNIEnv *env, uint32_t width, uint32_t height);
+
+    void draw_color(u_int32_t *pixel, u_int32_t color);
+
+    void draw(jint stride, void *pixels, u_short x, u_short y, u_int32_t color);
 }
 
 

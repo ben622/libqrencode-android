@@ -9,7 +9,8 @@ include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE 	:= qrencode-android
-LOCAL_LDLIBS 	:= -llog
+LOCAL_CPPFLAGS 	:= -std=c++11
+LOCAL_LDLIBS 	:= -llog -ljnigraphics -landroid
 LOCAL_SHARED_LIBRARIES 	:= qrencode
 LOCAL_C_INCLUDES := ./libqrencode/include/
 LOCAL_SRC_FILES     := jni.cpp qrencode.cpp
