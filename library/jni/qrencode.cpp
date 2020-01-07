@@ -8,8 +8,9 @@ jint qrencode::encode(const char *qrsource, unsigned int prescaler, const char *
     return encode(qrsource, prescaler, output, 0, 0, 0);
 }
 
-jint qrencode::encode(const char *qrsource, unsigned int prescaler, const char *output, unsigned int r,
-                  unsigned int g, unsigned int b) {
+jint
+qrencode::encode(const char *qrsource, unsigned int prescaler, const char *output, unsigned int r,
+                 unsigned int g, unsigned int b) {
     unsigned int unWidth, x, y, l, n, unWidthAdjusted, unDataBytes;
     unsigned char *pRGBData, *pSourceData, *pDestData;
     QRcode *pQRC;
@@ -26,7 +27,7 @@ jint qrencode::encode(const char *qrsource, unsigned int prescaler, const char *
 
         // Allocate pixels buffer
         if (!(pRGBData = (unsigned char *) malloc(unDataBytes))) {
-            if (LOGS_ENABLED) LOGE("%s","Out of memory");
+            if (LOGS_ENABLED) LOGE("%s", "Out of memory");
             return -1;
         }
         // Preset to white
@@ -94,22 +95,24 @@ jint qrencode::encode(const char *qrsource, unsigned int prescaler, const char *
             fwrite(pRGBData, sizeof(unsigned char), unDataBytes, f);
             fclose(f);
         } else {
-            if (LOGS_ENABLED) LOGE("%s","Unable to open file");
+            if (LOGS_ENABLED) LOGE("%s", "Unable to open file");
             return -1;
         }
 
         // Free data
         free(pRGBData);
         QRcode_free(pQRC);
-        if (LOGS_ENABLED) LOGI("qrencode successful,outputfile:%s",output);
+        if (LOGS_ENABLED) LOGI("qrencode successful,outputfile:%s", output);
     } else {
-        if (LOGS_ENABLED) LOGE("%s","NULL returned");
+        if (LOGS_ENABLED) LOGE("%s", "NULL returned");
         return -1;
     }
     return 0;
 }
 
-jobject qrencode::encode(JNIEnv *env,const char *qrsource, unsigned int prescaler, unsigned  int backColor,unsigned int qrColor) {
+jobject
+qrencode::encode(JNIEnv *env, const char *qrsource, unsigned int prescaler, unsigned int backColor,
+                 unsigned int qrColor) {
     unsigned int unWidth, x, y, l, n;
     QRcode *pQRC;
     FILE *f;
@@ -147,10 +150,14 @@ jobject qrencode::encode(JNIEnv *env,const char *qrsource, unsigned int prescale
         for (x = 0; x < unWidth; x++) {
             for (y = 0; y < unWidth; y++) {
                 //write color.
-                if(pQRC->data[x * pQRC->width + y] & 1){
-                    for (l = x*prescaler; l < x*prescaler+prescaler; l++) {
-                        for (n = y*prescaler; n < y*prescaler+prescaler; n++) {
-                            draw(srcInfo.stride, bitmapPixels,l,n, qrColor);
+                if (pQRC->data[x * pQRC->width + y] & 1) {
+                    int sl = x * prescaler;
+                    int el = x * prescaler + prescaler;
+                    int sn = y * prescaler;
+                    int en = y * prescaler + prescaler;
+                    for (l = sl; l < el; l++) {
+                        for (n = sn; n < en; n++) {
+                            draw(srcInfo.stride, bitmapPixels, l, n, qrColor);
                         }
                     }
                 }
@@ -163,7 +170,7 @@ jobject qrencode::encode(JNIEnv *env,const char *qrsource, unsigned int prescale
         QRcode_free(pQRC);
         return jbitmap;
     } else {
-        if (LOGS_ENABLED) LOGE("%s","NULL returned");
+        if (LOGS_ENABLED) LOGE("%s", "NULL returned");
         return nullptr;
     }
 }
