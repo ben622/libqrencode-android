@@ -108,3 +108,99 @@ jint qrencode::encode(const char *qrsource, unsigned int prescaler, const char *
     }
     return 0;
 }
+
+jobject qrencode::encode(JNIEnv *env,const char *qrsource, unsigned int prescaler, unsigned int color) {
+    unsigned int unWidth, x, y, l, n;
+    QRcode *pQRC;
+    FILE *f;
+
+    if (pQRC = QRcode_encodeString(qrsource, 0, QR_ECLEVEL_H, QR_MODE_8, 1)) {
+        //根据输入大小自动放大缩放二维码
+        prescaler = prescaler / pQRC->width;
+        unWidth = pQRC->width;
+
+        //create bitmap
+        jobject jbitmap = createBitmap(env, unWidth * prescaler, unWidth * prescaler);
+
+        AndroidBitmapInfo srcInfo;
+        int result = 0;
+        result = AndroidBitmap_getInfo(env, jbitmap, &srcInfo);
+        if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
+            LOGE("%s", "AndroidBitmap_getInfo failed");
+            return nullptr;
+        }
+
+        void *bitmapPixels;
+        result = AndroidBitmap_lockPixels(env, jbitmap, &bitmapPixels);
+        if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
+            LOGE("%s", "AndroidBitmap_lockPixels failed");
+            return nullptr;
+        }
+
+        //default draw white,support exten other color.
+        for (x = 0; x < srcInfo.width; x++) {
+            for (y = 0; y < srcInfo.height; y++) {
+                draw(srcInfo.stride, bitmapPixels, x, y, 0xFFFFFFFF);
+            }
+        }
+        //convert to bitmap pixel.
+        for (x = 0; x < unWidth; x++) {
+            for (y = 0; y < unWidth; y++) {
+                //write color.
+                if(pQRC->data[x * pQRC->width + y] & 1){
+                    for (l = x*prescaler; l < x*prescaler+prescaler; l++) {
+                        for (n = y*prescaler; n < y*prescaler+prescaler; n++) {
+                            draw(srcInfo.stride, bitmapPixels,l,n, color);
+                        }
+                    }
+                }
+            }
+        }
+
+        AndroidBitmap_unlockPixels(env, jbitmap);
+        LOGE("%s", "write successful!");
+        // Free data
+        QRcode_free(pQRC);
+        return jbitmap;
+    } else {
+        if (LOGS_ENABLED) LOGE("%s","NULL returned");
+        return nullptr;
+    }
+}
+
+jobject qrencode::createBitmap(JNIEnv *env, uint32_t width, uint32_t height) {
+    //find bitmap class.
+    jclass jbitmapClass = env->FindClass("android/graphics/Bitmap");
+    jmethodID createBitmapFunction = env->GetStaticMethodID(jbitmapClass,
+                                                            "createBitmap",
+                                                            "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+    //set Bitmap Config.
+    jstring configName = env->NewStringUTF("ARGB_8888");
+    jclass bitmapConfigClass = env->FindClass("android/graphics/Bitmap$Config");
+    jmethodID valueOfBitmapConfigFunction = env->GetStaticMethodID(
+            bitmapConfigClass, "valueOf",
+            "(Ljava/lang/String;)Landroid/graphics/Bitmap$Config;");
+    jobject bitmapConfig = env->CallStaticObjectMethod(bitmapConfigClass,
+                                                       valueOfBitmapConfigFunction, configName);
+    //call Bitmap.createBitmap()
+    return env->CallStaticObjectMethod(jbitmapClass,
+                                       createBitmapFunction,
+                                       width,
+                                       height, bitmapConfig);
+}
+
+void qrencode::draw_color(u_int32_t *pixel, u_int32_t color) {
+    uint32_t alpha = (color & 0xFF000000) >> 24;
+    uint32_t blue = (color & 0x00FF0000) >> 16;
+    u_short green = (color & 0x0000FF00) >> 8;
+    u_char red = color & 0x00000FF;
+    *pixel = (alpha << 24) | (red << 16) | (green << 8) | blue;
+}
+
+void qrencode::draw(jint stride, void *pixels, u_short x, u_short y, u_int32_t color) {
+    pixels = (char *) pixels + y * stride;
+    u_int32_t *pixel = ((u_int32_t *) pixels) + x;
+    draw_color(pixel, color);
+}
+
+

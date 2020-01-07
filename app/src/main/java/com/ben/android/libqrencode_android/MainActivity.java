@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,13 +36,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generate() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
-                return;
-            }
-        }
-
         String qrsource = getEditTextContent(R.id.id_qrsource_tv);
         String sizes = getEditTextContent(R.id.id_qr_size);
         int qrsize = Integer.parseInt(TextUtils.isEmpty(sizes) ? "200" : sizes);
@@ -48,12 +44,12 @@ public class MainActivity extends AppCompatActivity {
         ImageView qrView = findViewById(R.id.qrview);
 
         long start = System.currentTimeMillis();
-        String path = getExternalCacheDir() + File.separator + start + ".bmp";
-        int code = QREncode.encode(qrsource, qrsize, path, getColorVal(R.id.id_qr_color_r), getColorVal(R.id.id_qr_color_g), getColorVal(R.id.id_qr_color_B));
+        int color = Color.argb(255, getColorVal(R.id.id_qr_color_r), getColorVal(R.id.id_qr_color_g), getColorVal(R.id.id_qr_color_B));
+        Bitmap bitmap = QREncode.encode(qrsource, qrsize, color);
         long end = System.currentTimeMillis();
-        if (code >= 0) {
-            qrView.setImageBitmap(BitmapFactory.decodeFile(path));
-            timeView.setText("Generation time:" + (end - start) + "ms，ouput:" + path);
+        if (bitmap!=null) {
+            qrView.setImageBitmap(bitmap);
+            timeView.setText("Generation time:" + (end - start) + "ms");
         } else {
             Toast.makeText(this, "encode failed", Toast.LENGTH_SHORT).show();
         }
@@ -68,11 +64,4 @@ public class MainActivity extends AppCompatActivity {
         return Integer.parseInt(TextUtils.isEmpty(rs) ? "0" : rs);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            generate();
-        }
-    }
 }
