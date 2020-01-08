@@ -1,4 +1,21 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+
+    userOrg = ''
+
+    groupId = 'com.ben.android'
+
+    artifactId = 'libqrencode-android'
+
+    publishVersion = '1.0.1'
+
+    desc = '使用libqrencode-android在C++中进行高效二维码编码😉,Efficient QR code encoding in C ++ using libqrencode-android'
+
+    website = 'https://github.com/ben622/libqrencode-android.git'
+
+}
 
 android {
     compileSdkVersion 29
@@ -16,7 +33,6 @@ android {
         externalNativeBuild {
             ndkBuild {
                 arguments "NDK_APPLICATION_MK:=jni/Application.mk", "APP_PLATFORM:=android-16", "-j4"
-                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
             }
         }
     }
@@ -27,16 +43,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-   /* externalNativeBuild {
-        cmake {
-            path file('CMakeLists.txt')
-        }
-    }
-*/
+    /* externalNativeBuild {
+         cmake {
+             path file('CMakeLists.txt')
+         }
+     }
+     */
     externalNativeBuild {
         ndkBuild {
             path file("./jni/Android.mk")
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
 }

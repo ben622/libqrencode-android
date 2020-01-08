@@ -3,6 +3,11 @@ This is an efficient and fast QR code encoding framework for the Android platfor
 <img src="./capture/libqrencode.gif" width="360px" height="640px"/>
 
 ### How do I use libqrencode?
+Add dependencies in build.gradle
+```
+implementation 'com.ben.android:libqrencode-android:1.0.1'
+```
+
 ```
 Bitmap bitmap = QREncode.encode(qrsource, qrsize, color);
 if (bitmap!=null) {
