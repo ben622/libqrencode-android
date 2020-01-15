@@ -7,7 +7,7 @@ This is an efficient and fast QR code encoding framework for the Android platfor
 Add dependencies in build.gradle
 
 ```
-implementation 'com.ben.android:libqrencode-android:1.0.1'
+implementation 'com.ben.android:libqrencode-android:1.0.2'
 ```
 
 ### case
