@@ -13,14 +13,11 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <wchar.h>
-#include <android/log.h>
-#include <android/bitmap.h>
 #include "./libqrencode/include/qrencode.h"
-#define LOGS_ENABLED true
-#define PRINT_TAG "qrencode"
-#define LOGI(FORMAT, ...) __android_log_print(ANDROID_LOG_VERBOSE,PRINT_TAG,FORMAT,__VA_ARGS__)
-#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,PRINT_TAG,FORMAT,__VA_ARGS__)
-
+#include <android/bitmap.h>
+#include "log.h"
+#include "util.h"
+#include "decorate.h"
 // default colors.
 #define PIXEL_COLOR_R                0
 #define PIXEL_COLOR_G                0
@@ -66,13 +63,10 @@ namespace qrencode{
     jint encode(const char *qrsource, unsigned int prescaler, const char *output, unsigned int r,
                 unsigned int g, unsigned int b);
 
-    jobject encode(JNIEnv *env,const char *qrsource, unsigned int prescaler, unsigned int backColor, unsigned int qrColor);
+    jobject encode(JNIEnv *env,const char *qrsource, unsigned int prescaler, unsigned int backColor, unsigned int qrColor,jobject logo);
 
     jobject createBitmap(JNIEnv *env, uint32_t width, uint32_t height);
 
-    void draw_color(u_int32_t *pixel, u_int32_t color);
-
-    void draw(jint stride, void *pixels, u_short x, u_short y, u_int32_t color);
 }
 
 

@@ -56,7 +56,7 @@ public class QREncode {
      * @return 如果编码成功返回一个非空bitmap对象
      */
     public static Bitmap encode(String qrsource, int prescaler) {
-        return nativeQREncode(qrsource, prescaler, Color.WHITE, Color.BLACK);
+        return nativeQREncode(qrsource, prescaler, Color.WHITE, Color.BLACK, null);
     }
 
     /**
@@ -66,7 +66,7 @@ public class QREncode {
      * @return 如果编码成功返回一个非空bitmap对象
      */
     public static Bitmap encode(String qrsource, int prescaler, int color) {
-        return nativeQREncode(qrsource, prescaler, Color.WHITE, color);
+        return nativeQREncode(qrsource, prescaler, Color.WHITE, color, null);
     }
 
     /**
@@ -77,7 +77,29 @@ public class QREncode {
      * @return 如果编码成功返回一个非空bitmap对象
      */
     public static Bitmap encode(String qrsource, int prescaler, int backgroundColor, int color) {
-        return nativeQREncode(qrsource, prescaler, backgroundColor, color);
+        return nativeQREncode(qrsource, prescaler, backgroundColor, color, null);
+    }
+
+    /**
+     * @param qrsource  二维码数据
+     * @param prescaler 期望的二维码图片大小，最终的大小可能小于该值。
+     * @param logo      在二维码中添加logo.
+     * @return 如果编码成功返回一个非空bitmap对象
+     */
+    public static Bitmap encode(String qrsource, int prescaler, Bitmap logo) {
+        return nativeQREncode(qrsource, prescaler, Color.WHITE, Color.BLACK, logo);
+    }
+
+    /**
+     * @param qrsource        二维码数据
+     * @param prescaler       期望的二维码图片大小，最终的大小可能小于该值。
+     * @param backgroundColor 二维码背景颜色，可以包含透明颜色通道
+     * @param color           二维码颜色，可以包含透明颜色通道
+     * @param logo            在二维码中添加logo.
+     * @return 如果编码成功返回一个非空bitmap对象
+     */
+    public static Bitmap encode(String qrsource, int prescaler, int backgroundColor, int color, Bitmap logo) {
+        return nativeQREncode(qrsource, prescaler, backgroundColor, color, logo);
     }
 
     /**
@@ -98,6 +120,6 @@ public class QREncode {
      * @param color           二维码颜色，可以包含透明颜色通道
      * @return 如果编码成功返回一个非空bitmap对象
      */
-    private native static Bitmap nativeQREncode(String qrsource, int prescaler, int backgroundColor, int color);
+    private native static Bitmap nativeQREncode(String qrsource, int prescaler, int backgroundColor, int color, Bitmap logo);
 
 }

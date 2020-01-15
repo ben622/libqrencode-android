@@ -13,6 +13,6 @@ LOCAL_CPPFLAGS 	:= -std=c++11
 LOCAL_LDLIBS 	:= -llog -ljnigraphics -landroid
 LOCAL_SHARED_LIBRARIES 	:= qrencode
 LOCAL_C_INCLUDES := ./libqrencode/include/
-LOCAL_SRC_FILES     := jni.cpp qrencode.cpp
+LOCAL_SRC_FILES     := jni.cpp decorate.cpp qrencode.cpp
 
 include $(BUILD_SHARED_LIBRARY)

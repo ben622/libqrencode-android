@@ -112,10 +112,10 @@ qrencode::encode(const char *qrsource, unsigned int prescaler, const char *outpu
 
 jobject
 qrencode::encode(JNIEnv *env, const char *qrsource, unsigned int prescaler, unsigned int backColor,
-                 unsigned int qrColor) {
+                 unsigned int qrColor, jobject logo) {
+
     unsigned int unWidth, x, y, l, n;
     QRcode *pQRC;
-    FILE *f;
 
     if (pQRC = QRcode_encodeString(qrsource, 0, QR_ECLEVEL_H, QR_MODE_8, 1)) {
         //根据输入大小自动放大缩放二维码
@@ -129,14 +129,14 @@ qrencode::encode(JNIEnv *env, const char *qrsource, unsigned int prescaler, unsi
         int result = 0;
         result = AndroidBitmap_getInfo(env, jbitmap, &srcInfo);
         if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
-            LOGE("%s", "AndroidBitmap_getInfo failed");
+            if (LOGS_ENABLED) LOGE("%s", "AndroidBitmap_getInfo failed");
             return nullptr;
         }
 
         void *bitmapPixels;
         result = AndroidBitmap_lockPixels(env, jbitmap, &bitmapPixels);
         if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
-            LOGE("%s", "AndroidBitmap_lockPixels failed");
+            if (LOGS_ENABLED) LOGE("%s", "AndroidBitmap_lockPixels failed");
             return nullptr;
         }
 
@@ -165,7 +165,8 @@ qrencode::encode(JNIEnv *env, const char *qrsource, unsigned int prescaler, unsi
         }
 
         AndroidBitmap_unlockPixels(env, jbitmap);
-        LOGE("%s", "write successful!");
+        if (LOGS_ENABLED) LOGI("%s", "write successful!");
+        decorate::insertLogo(env, &srcInfo, bitmapPixels, logo);
         // Free data
         QRcode_free(pQRC);
         return jbitmap;
@@ -194,20 +195,6 @@ jobject qrencode::createBitmap(JNIEnv *env, uint32_t width, uint32_t height) {
                                        createBitmapFunction,
                                        width,
                                        height, bitmapConfig);
-}
-
-void qrencode::draw_color(u_int32_t *pixel, u_int32_t color) {
-    uint32_t alpha = (color & 0xFF000000) >> 24;
-    uint32_t blue = (color & 0x00FF0000) >> 16;
-    u_short green = (color & 0x0000FF00) >> 8;
-    u_char red = color & 0x00000FF;
-    *pixel = (alpha << 24) | (red << 16) | (green << 8) | blue;
-}
-
-void qrencode::draw(jint stride, void *pixels, u_short x, u_short y, u_int32_t color) {
-    pixels = (char *) pixels + y * stride;
-    u_int32_t *pixel = ((u_int32_t *) pixels) + x;
-    draw_color(pixel, color);
 }
 
 

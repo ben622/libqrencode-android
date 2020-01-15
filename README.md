@@ -1,15 +1,29 @@
 This is an efficient and fast QR code encoding framework for the Android platform. The encoding scheme comes from[libqrencode](https://github.com/fukuchi/libqrencode)，The project is to encapsulate libqrencode to facilitate QR code encoding on Android.
 
 <img src="./capture/libqrencode.gif" width="360px" height="640px"/>
-
+<img src="./capture/capture_insert_log.gif" width="360px" height="640px"/>
 ### How do I use libqrencode?
 Add dependencies in build.gradle
 ```
 implementation 'com.ben.android:libqrencode-android:1.0.1'
 ```
 
+### case
+- Generate a QR code
+
 ```
 Bitmap bitmap = QREncode.encode(qrsource, qrsize, color);
+if (bitmap!=null) {
+    Toast.makeText(this, "qrencode successful", Toast.LENGTH_SHORT).show();
+} else {
+    Toast.makeText(this, "qrencode failed", Toast.LENGTH_SHORT).show();
+}
+```
+
+- Generate QR code with Logo
+
+```
+Bitmap bitmap = QREncode. encode(qrsource, prescaler, logo);
 if (bitmap!=null) {
     Toast.makeText(this, "qrencode successful", Toast.LENGTH_SHORT).show();
 } else {
