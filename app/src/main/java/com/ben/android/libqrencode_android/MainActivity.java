@@ -26,7 +26,7 @@ import com.ben.android.qrencode.library.QREncode;
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
-    private CheckBox transparentBox;
+    private CheckBox transparentBox, insertLogoBox;
     private ObjectAnimator animator;
     private View backgroundView;
 
@@ -36,13 +36,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         backgroundView = findViewById(R.id.background);
         transparentBox = findViewById(R.id.id_transparent);
+        insertLogoBox = findViewById(R.id.id_insert_logo);
+        insertLogoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                generate();
+            }
+        });
         transparentBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (animator != null) {
                     animator.cancel();
                 }
-                backgroundView.setAlpha(isChecked?0f:1.0f);
+                backgroundView.setAlpha(isChecked ? 0f : 1.0f);
                 backgroundView.setVisibility(View.VISIBLE);
                 animator = ObjectAnimator.ofFloat(backgroundView, "alpha", isChecked ? 0f : 1.0f, isChecked ? 1.0f : 0f);
                 animator.setDuration(500);
@@ -61,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private void generate() {
         String qrsource = getEditTextContent(R.id.id_qrsource_tv);
         String sizes = getEditTextContent(R.id.id_qr_size);
-        int qrsize = Integer.parseInt(TextUtils.isEmpty(sizes) ? "400" : sizes);
+        int qrsize = Integer.parseInt(TextUtils.isEmpty(sizes) ? "600" : sizes);
 
         TextView timeView = findViewById(R.id.id_generat_time);
         ImageView qrView = findViewById(R.id.qrview);
@@ -75,7 +82,12 @@ public class MainActivity extends AppCompatActivity {
         }
         //qr color.
         int color = Color.argb(255, getColorVal(R.id.id_qr_color_r), getColorVal(R.id.id_qr_color_g), getColorVal(R.id.id_qr_color_B));
-        Bitmap bitmap = QREncode.encode(qrsource, qrsize, bgcolor, color);
+        Bitmap bitmap;
+        if (insertLogoBox.isChecked()) {
+            bitmap = QREncode.encode(qrsource, qrsize, bgcolor, color, getLogo(qrsize, 11));
+        } else {
+            bitmap = QREncode.encode(qrsource, qrsize, bgcolor,color);
+        }
         long end = System.currentTimeMillis();
         if (bitmap != null) {
             qrView.setImageBitmap(bitmap);
@@ -83,6 +95,27 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "encode failed", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * get logo bitmao.
+     *
+     * @param qrsize
+     * @param scale  scale baseline.
+     * @return
+     */
+    private Bitmap getLogo(int qrsize, int scale) {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(getResources(), R.drawable.icon_wechat, opts);
+        int logoWidth = opts.outWidth;
+        if (logoWidth >= qrsize) {
+            Toast.makeText(this, "Logo width must be smaller than QR code", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        opts.inJustDecodeBounds = false;
+        opts.inSampleSize = scale / (qrsize / logoWidth);
+        return BitmapFactory.decodeResource(getResources(), R.drawable.icon_wechat, opts);
     }
 
     private String getEditTextContent(int id) {
