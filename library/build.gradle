@@ -9,7 +9,7 @@ publish {
 
     artifactId = 'libqrencode-android'
 
-    publishVersion = '1.0.2'
+    publishVersion = '1.0.3'
 
     desc = '使用libqrencode-android在C++中进行高效二维码编码😉,Efficient QR code encoding in C ++ using libqrencode-android'
 

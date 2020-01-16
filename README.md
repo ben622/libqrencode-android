@@ -2,15 +2,15 @@
 
 This is an efficient and fast QR code encoding framework for the Android platform. The encoding scheme comes from[libqrencode](https://github.com/fukuchi/libqrencode)，The project is to encapsulate libqrencode to facilitate QR code encoding on Android.
 
-<img src="./capture/libqrencode.gif" width="360px" height="640px"/>
 <img src="./capture/capture_overlay.gif" width="360px" height="640px"/>
+<img src="./capture/libqrencode.gif" width="360px" height="640px"/>
 <img src="./capture/capture_insert_log.gif" width="360px" height="640px"/>
 
 ### How do I use libqrencode?
 Add dependencies in build.gradle
 
 ```
-implementation 'com.ben.android:libqrencode-android:1.0.2'
+implementation 'com.ben.android:libqrencode-android:1.0.3'
 ```
 
 ### case
