@@ -176,6 +176,98 @@ qrencode::encode(JNIEnv *env, const char *qrsource, unsigned int prescaler, unsi
     }
 }
 
+jobject
+qrencode::encode(JNIEnv *env, const char *qrsource, unsigned int prescaler, unsigned int backColor,
+                 jobject overlay, jobject logo) {
+    unsigned int unWidth, x, y, l, n;
+    QRcode *pQRC;
+
+    if (pQRC = QRcode_encodeString(qrsource, 0, QR_ECLEVEL_H, QR_MODE_8, 1)) {
+        //根据输入大小自动放大缩放二维码
+        prescaler = prescaler / pQRC->width;
+        unWidth = pQRC->width;
+
+        //create bitmap
+        jobject jbitmap = createBitmap(env, unWidth * prescaler, unWidth * prescaler);
+
+        AndroidBitmapInfo srcInfo;
+        int result = 0;
+        result = AndroidBitmap_getInfo(env, jbitmap, &srcInfo);
+        if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
+            if (LOGS_ENABLED) LOGE("%s", "AndroidBitmap_getInfo failed");
+            return nullptr;
+        }
+
+        void *bitmapPixels;
+        result = AndroidBitmap_lockPixels(env, jbitmap, &bitmapPixels);
+        if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
+            if (LOGS_ENABLED) LOGE("%s", "AndroidBitmap_lockPixels failed");
+            return nullptr;
+        }
+
+        //////////////get overlay pixel//////////////////
+        AndroidBitmapInfo overlayInfo;
+        result = AndroidBitmap_getInfo(env, overlay, &overlayInfo);
+        if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
+            if (LOGS_ENABLED) LOGE("%s", "get overlay failed!");
+        }
+        void *overlayPixel;
+        result = AndroidBitmap_lockPixels(env, overlay, &overlayPixel);
+        if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
+            if (LOGS_ENABLED) LOGE("%s", "lock overlay pixel failed");
+        }
+
+        //default draw white,support exten other color.
+        for (x = 0; x < srcInfo.width; x++) {
+            for (y = 0; y < srcInfo.height; y++) {
+                draw(srcInfo.stride, bitmapPixels, x, y, backColor);
+            }
+        }
+
+        //convert to bitmap pixel.
+        for (x = 0; x < unWidth; x++) {
+            for (y = 0; y < unWidth; y++) {
+                //write color.
+                if (pQRC->data[x * pQRC->width + y] & 1) {
+                    int sl = x * prescaler;
+                    int el = x * prescaler + prescaler;
+                    int sn = y * prescaler;
+                    int en = y * prescaler + prescaler;
+                    for (l = sl; l < el; l++) {
+                        for (n = sn; n < en; n++) {
+                            if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
+                                //use default color.
+                                draw(srcInfo.stride, bitmapPixels, l, n, DEFAULT_QR_COLOR);
+                            }else{
+                                //write overlay pixel.
+                                int color = ((int32_t *) overlayPixel)[overlayInfo.width * n + l];
+                                uint32_t alpha = (color & 0xFF000000) >> 24;
+                                uint32_t red = ((color & 0x00FF0000) >> 16);
+                                uint32_t green = ((color & 0x0000FF00) >> 8);
+                                uint32_t blue = color & 0x000000FF;
+                                draw(srcInfo.stride, bitmapPixels, l, n,
+                                     (alpha << 24) | (blue << 16) | (green << 8) | red);
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        AndroidBitmap_unlockPixels(env, overlay);
+        AndroidBitmap_unlockPixels(env, jbitmap);
+        if (LOGS_ENABLED) LOGI("%s", "write successful!");
+        decorate::insertLogo(env, &srcInfo, bitmapPixels, logo);
+        // Free data
+        QRcode_free(pQRC);
+        return jbitmap;
+    } else {
+        if (LOGS_ENABLED) LOGE("%s", "NULL returned");
+        return nullptr;
+    }
+}
+
 jobject qrencode::createBitmap(JNIEnv *env, uint32_t width, uint32_t height) {
     //find bitmap class.
     jclass jbitmapClass = env->FindClass("android/graphics/Bitmap");

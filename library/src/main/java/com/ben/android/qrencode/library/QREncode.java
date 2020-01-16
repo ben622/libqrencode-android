@@ -91,6 +91,7 @@ public class QREncode {
     }
 
     /**
+     * 创建一个带Logo的二维码
      * @param qrsource        二维码数据
      * @param prescaler       期望的二维码图片大小，最终的大小可能小于该值。
      * @param backgroundColor 二维码背景颜色，可以包含透明颜色通道
@@ -103,6 +104,29 @@ public class QREncode {
     }
 
     /**
+     * 使用图片填充二维码
+     * @param qrsource        二维码数据
+     * @param prescaler       期望的二维码图片大小，最终的大小可能小于该值。
+     * @param qroverlay       填充二维码的位图使用{@link QREncodeUtilities#createQROverlay(Bitmap, int)}创建
+     * @return 如果编码成功返回一个非空bitmap对象
+     */
+    public static Bitmap encodeOverlay(String qrsource, int prescaler,Bitmap qroverlay) {
+        return nativeQREncode(qrsource, prescaler, Color.WHITE, qroverlay, null);
+    }
+
+    /**
+     * 创建一个带Logo的二维码
+     * @param qrsource        二维码数据
+     * @param prescaler       期望的二维码图片大小，最终的大小可能小于该值。
+     * @param backgroundColor 二维码背景颜色，可以包含透明颜色通道
+     * @param qroverlay       填充二维码的位图使用{@link QREncodeUtilities#createQROverlay(Bitmap, int)}创建
+     * @param logo            在二维码中添加logo.
+     * @return 如果编码成功返回一个非空bitmap对象
+     */
+    public static Bitmap encodeOverlay(String qrsource, int prescaler,int backgroundColor,Bitmap qroverlay,Bitmap logo) {
+        return nativeQREncode(qrsource, prescaler, backgroundColor, qroverlay, logo);
+    }
+    /**
      * @param qrsource  二维码数据
      * @param prescaler 期望的二维码图片大小，最终的大小可能小于该值。
      * @param output    输出文件，以bmp结尾
@@ -111,7 +135,7 @@ public class QREncode {
      * @param b         二维码颜色通道B
      * @return 大于等于0 successful
      */
-    private native static int nativeQREncode(String qrsource, int prescaler, String output, @IntRange(from = 0, to = 255) int r, @IntRange(from = 0, to = 255) int g, @IntRange(from = 0, to = 255) int b);
+    public native static int nativeQREncode(String qrsource, int prescaler, String output, @IntRange(from = 0, to = 255) int r, @IntRange(from = 0, to = 255) int g, @IntRange(from = 0, to = 255) int b);
 
     /**
      * @param qrsource        二维码数据
@@ -120,6 +144,10 @@ public class QREncode {
      * @param color           二维码颜色，可以包含透明颜色通道
      * @return 如果编码成功返回一个非空bitmap对象
      */
-    private native static Bitmap nativeQREncode(String qrsource, int prescaler, int backgroundColor, int color, Bitmap logo);
+    public native static Bitmap nativeQREncode(String qrsource, int prescaler, int backgroundColor, int color, Bitmap logo);
+
+
+    public native static Bitmap nativeQREncode(String qrsource, int prescaler, int backgroundColor, Bitmap overlay, Bitmap logo);
+
 
 }
