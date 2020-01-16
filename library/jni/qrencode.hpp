@@ -19,6 +19,7 @@
 #include "util.h"
 #include "decorate.h"
 // default colors.
+#define DEFAULT_QR_COLOR            0xFF000000
 #define PIXEL_COLOR_R                0
 #define PIXEL_COLOR_G                0
 #define PIXEL_COLOR_B                0
@@ -64,6 +65,8 @@ namespace qrencode{
                 unsigned int g, unsigned int b);
 
     jobject encode(JNIEnv *env,const char *qrsource, unsigned int prescaler, unsigned int backColor, unsigned int qrColor,jobject logo);
+
+    jobject encode(JNIEnv *env,const char *qrsource, unsigned int prescaler, unsigned int backColor, jobject overly,jobject logo);
 
     jobject createBitmap(JNIEnv *env, uint32_t width, uint32_t height);
 

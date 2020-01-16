@@ -1,41 +1,66 @@
 package com.ben.android.libqrencode_android;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.Manifest;
 import android.animation.ObjectAnimator;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ben.android.qrencode.library.QREncode;
-
-import java.io.File;
+import com.ben.android.qrencode.library.QREncodeUtilities;
 
 public class MainActivity extends AppCompatActivity {
-    private CheckBox transparentBox, insertLogoBox;
-    private ObjectAnimator animator;
+    private CheckBox transparentBox, insertLogoBox,useOverlayBox;
+    private ObjectAnimator transparentAnimator,overlayAnimator;
     private View backgroundView;
-
+    private LinearLayout overlayList;
+    private Bitmap selectOverlay;
+    private HorizontalScrollView overlayContainer;
+    private View.OnClickListener overlayClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String tag =  v.getTag().toString();
+            int id = getResources().getIdentifier("overlay_"+tag, "drawable", getPackageName());
+            selectOverlay = BitmapFactory.decodeResource(getResources(), id);
+            generate();
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         backgroundView = findViewById(R.id.background);
         transparentBox = findViewById(R.id.id_transparent);
+        overlayContainer = findViewById(R.id.id_overlay_container);
+        useOverlayBox = findViewById(R.id.id_use_overlay);
+        useOverlayBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (overlayAnimator != null) {
+                    overlayAnimator.cancel();
+                }
+                overlayContainer.setAlpha(isChecked ? 0f : 1.0f);
+                overlayContainer.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                overlayAnimator = ObjectAnimator.ofFloat(overlayContainer, "alpha", isChecked ? 0f : 1.0f, isChecked ? 1.0f : 0f);
+                overlayAnimator.setDuration(500);
+                overlayAnimator.start();
+
+            }
+        });
+
         insertLogoBox = findViewById(R.id.id_insert_logo);
         insertLogoBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -46,19 +71,26 @@ public class MainActivity extends AppCompatActivity {
         transparentBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (animator != null) {
-                    animator.cancel();
+                if (transparentAnimator != null) {
+                    transparentAnimator.cancel();
                 }
                 backgroundView.setAlpha(isChecked ? 0f : 1.0f);
                 backgroundView.setVisibility(View.VISIBLE);
-                animator = ObjectAnimator.ofFloat(backgroundView, "alpha", isChecked ? 0f : 1.0f, isChecked ? 1.0f : 0f);
-                animator.setDuration(500);
-                animator.start();
+                transparentAnimator = ObjectAnimator.ofFloat(backgroundView, "alpha", isChecked ? 0f : 1.0f, isChecked ? 1.0f : 0f);
+                transparentAnimator.setDuration(500);
+                transparentAnimator.start();
 
                 generate();
             }
         });
+        initOverlay();
         generate();
+    }
+    public void initOverlay() {
+        overlayList = findViewById(R.id.id_overlay_list);
+        for (int i = 0; i < overlayList.getChildCount(); i++) {
+            overlayList.getChildAt(i).setOnClickListener(overlayClickListener);
+        }
     }
 
     public void generate(View view) {
@@ -80,14 +112,17 @@ public class MainActivity extends AppCompatActivity {
             bgcolor = Color.TRANSPARENT;
 
         }
-        //qr color.
-        int color = Color.argb(255, getColorVal(R.id.id_qr_color_r), getColorVal(R.id.id_qr_color_g), getColorVal(R.id.id_qr_color_B));
+
         Bitmap bitmap;
-        if (insertLogoBox.isChecked()) {
-            bitmap = QREncode.encode(qrsource, qrsize, bgcolor, color, getLogo(qrsize, 11));
-        } else {
-            bitmap = QREncode.encode(qrsource, qrsize, bgcolor,color);
+        if (useOverlayBox.isChecked()) {
+            bitmap = QREncode.encodeOverlay(qrsource, qrsize, bgcolor,
+                    QREncodeUtilities.createQROverlay(selectOverlay, qrsize),
+                    insertLogoBox.isChecked() ? getLogo(qrsize, 11) : null);
+        }else{
+            int color = Color.argb(255, getColorVal(R.id.id_qr_color_r), getColorVal(R.id.id_qr_color_g), getColorVal(R.id.id_qr_color_B));
+            bitmap = QREncode.encode(qrsource, qrsize, bgcolor, color, insertLogoBox.isChecked() ? getLogo(qrsize, 11) : null);
         }
+
         long end = System.currentTimeMillis();
         if (bitmap != null) {
             qrView.setImageBitmap(bitmap);

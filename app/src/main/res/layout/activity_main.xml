@@ -90,6 +90,88 @@
             app:layout_constraintTop_toBottomOf="@+id/id_transparent"
             tools:ignore="MissingConstraints" />
 
+        <CheckBox
+            android:id="@+id/id_use_overlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fill QR code with pictures"
+            app:layout_constraintTop_toBottomOf="@+id/id_insert_logo"
+            tools:ignore="MissingConstraints" />
+
+        <HorizontalScrollView
+            android:id="@+id/id_overlay_container"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:clickable="true"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/id_use_overlay"
+            tools:ignore="MissingConstraints">
+
+            <LinearLayout
+                android:id="@+id/id_overlay_list"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:tag="1"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/overlay_1" />
+
+                <ImageView
+                    android:tag="2"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/overlay_2" />
+
+                <ImageView
+                    android:tag="3"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/overlay_3" />
+
+                <ImageView
+                    android:tag="4"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/overlay_4" />
+
+                <ImageView
+                    android:tag="5"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/overlay_5" />
+
+                <ImageView
+                    android:tag="6"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/overlay_6" />
+
+                <ImageView
+                    android:tag="7"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/overlay_7" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
         <Button
             android:id="@+id/generatQR"
             android:layout_width="match_parent"
@@ -100,16 +182,16 @@
             android:text="Generate QR"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/id_insert_logo" />
+            app:layout_constraintTop_toBottomOf="@+id/id_overlay_container" />
 
         <TextView
             android:id="@+id/id_generat_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:textSize="12sp"
-            android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/generatQR" />
@@ -136,9 +218,9 @@
             android:layout_height="300dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
+            android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:scaleType="centerInside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/id_generat_time" />
     </androidx.constraintlayout.widget.ConstraintLayout>
