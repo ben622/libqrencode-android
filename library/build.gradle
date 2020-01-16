@@ -3,7 +3,7 @@ apply plugin: 'com.novoda.bintray-release'
 
 publish {
 
-    userOrg = 'zhangchuan622'
+    userOrg = ''
 
     groupId = 'com.ben.android'
 
