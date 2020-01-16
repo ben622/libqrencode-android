@@ -13,39 +13,25 @@ Add dependencies in build.gradle
 implementation 'com.ben.android:libqrencode-android:1.0.3'
 ```
 
-### case
+### How to code?
+Just one line of code
+
 - Generate a QR code
 
 ```
 Bitmap bitmap = QREncode.encode(qrsource, qrsize, color);
-if (bitmap!=null) {
-    Toast.makeText(this, "qrencode successful", Toast.LENGTH_SHORT).show();
-} else {
-    Toast.makeText(this, "qrencode failed", Toast.LENGTH_SHORT).show();
-}
 ```
 
 - Generate QR code with Logo
 
 ```
 Bitmap bitmap = QREncode.encode(qrsource, prescaler, logo);
-if (bitmap!=null) {
-    Toast.makeText(this, "qrencode successful", Toast.LENGTH_SHORT).show();
-} else {
-    Toast.makeText(this, "qrencode failed", Toast.LENGTH_SHORT).show();
-}
 ```
 
 - Fill QR code with pictures
 
 ```
-Bitmap overlay = QREncodeUtilities.createQROverlay(selectOverlay, qrsize);
 Bitmap bitmap = QREncode.encodeOverlay(qrsource, qrsize, bgcolor,overlay,logo);
-if (bitmap!=null) {
-    Toast.makeText(this, "qrencode successful", Toast.LENGTH_SHORT).show();
-} else {
-    Toast.makeText(this, "qrencode failed", Toast.LENGTH_SHORT).show();
-}
 ```
 
 
