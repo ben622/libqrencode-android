@@ -111,7 +111,7 @@ public class QREncode {
      * @return 如果编码成功返回一个非空bitmap对象
      */
     public static Bitmap encodeOverlay(String qrsource, int prescaler,Bitmap qroverlay) {
-        return nativeQREncode(qrsource, prescaler, Color.WHITE, qroverlay, null);
+        return encodeOverlay(qrsource, prescaler, Color.WHITE, qroverlay, null);
     }
 
     /**
@@ -124,7 +124,7 @@ public class QREncode {
      * @return 如果编码成功返回一个非空bitmap对象
      */
     public static Bitmap encodeOverlay(String qrsource, int prescaler,int backgroundColor,Bitmap qroverlay,Bitmap logo) {
-        return nativeQREncode(qrsource, prescaler, backgroundColor, qroverlay, logo);
+        return nativeQREncode(qrsource, prescaler, backgroundColor, QREncodeUtilities.createQROverlay(qroverlay,prescaler), logo);
     }
     /**
      * @param qrsource  二维码数据

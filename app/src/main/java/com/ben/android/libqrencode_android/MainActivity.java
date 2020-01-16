@@ -115,8 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         Bitmap bitmap;
         if (useOverlayBox.isChecked()) {
-            bitmap = QREncode.encodeOverlay(qrsource, qrsize, bgcolor,
-                    QREncodeUtilities.createQROverlay(selectOverlay, qrsize),
+            bitmap = QREncode.encodeOverlay(qrsource, qrsize, bgcolor,selectOverlay,
                     insertLogoBox.isChecked() ? getLogo(qrsize, 11) : null);
         }else{
             int color = Color.argb(255, getColorVal(R.id.id_qr_color_r), getColorVal(R.id.id_qr_color_g), getColorVal(R.id.id_qr_color_B));
