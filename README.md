@@ -1,6 +1,6 @@
 [ ![Download](https://api.bintray.com/packages/zhangchuan622/maven/libqrencode-android/images/download.svg?version=1.0.3) ](https://bintray.com/zhangchuan622/maven/libqrencode-android/1.0.3/link)
 
-This is an efficient and fast QR code encoding framework for the Android platform. The encoding scheme comes from[libqrencode](https://github.com/fukuchi/libqrencode)，The project is to encapsulate libqrencode to facilitate QR code encoding on Android.
+This is an efficient and fast QR code encoding framework for the Android platform. The encoding scheme comes from[libqrencode](https://github.com/fukuchi/libqrencode)，The project is to encapsulate libqrencode to facilitate QR code encoding on Android.You can [download](https://github.com/ben622/libqrencode-android/releases) and install qrencode demo here
 
 <img src="./capture/capture_overlay.gif" width="360px" height="640px"/>
 <img src="./capture/libqrencode.gif" width="360px" height="640px"/>
